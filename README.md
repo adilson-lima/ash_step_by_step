@@ -1,5 +1,7 @@
 # AshStepByStep
 
+A simple project using Ash framework is one that defines a set of resources and actions that model your domain, and then derives external APIs such as GraphQL or JSON:API from them. 
+
 Step by step to create a new project with elixir, phoenix, ash, graphql, rest and database postgres.
 
 ### Step 01
