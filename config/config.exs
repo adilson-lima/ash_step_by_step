@@ -7,6 +7,14 @@
 # General application configuration
 import Config
 
+config :mime, :types, %{
+  "application/vnd.api+json" => ["json"]
+}
+
+config :mime, :extensions, %{
+  "json" => "application/vnd.api+json"
+}
+
 config :ash_step_by_step, :default_managed_relationship_type_name_template, :action_name
 
 config :ash_step_by_step,

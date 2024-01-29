@@ -60,6 +60,15 @@ end
 Edit file ***config.exs*** to add Ash suport
 
 ```elixir
+# config/config.exs
+config :mime, :types, %{
+  "application/vnd.api+json" => ["json"]
+}
+
+config :mime, :extensions, %{
+  "json" => "application/vnd.api+json"
+}
+
 config :ash_step_by_step, :default_managed_relationship_type_name_template, :action_name
 config :my_project, ash_apis: [AshStepByStep.MyApi]
 ```
@@ -83,6 +92,27 @@ defmodule AshStepByStep.Schema do
 end
 
 ```
+
+### Step 09
+Create a separate router in ***/ash_step_by_step_web/my_api/router.ex**, this module to work with your APIs
+```elixir
+defmodule AshStepByStepWeb.MyApi.Router do
+  use AshJsonApi.Api.Router,
+    apis: [AshStepByStep.MyApi],
+
+    # optionally a json_schema route
+    json_schema: "/json_schema"
+
+  # optionally an open_api route
+  # open_api: "/open_api"
+end
+```
+
+### Step 10
+Recompile the mime:
+
+      $ mix deps.compile mime --force
+
 
 ### Step 09
 Create a file resource ***/ash_step_by_step/my_api/resources/user.ex***
@@ -135,7 +165,7 @@ defmodule AshStepByStep.MyApi do
   use Ash.Api,
     extensions: [
       AshGraphql.Api,
-      AshJsonApi
+      AshJsonApi.Api
     ]
 
   resources do
@@ -170,10 +200,12 @@ Configure phoenix router in file ***ash_step_by_step_web/router.ex***
             interface: :playground
   end
 
-  scope "/", AshStepByStepWeb do
-    pipe_through :browser
+  
 
-    get "/", PageController, :home
+  scope "/api/json" do
+    pipe_through(:api)
+
+    forward "/", AshStepByStepWeb.MyApi.Router
   end
 
   ...
@@ -188,10 +220,16 @@ Create the database and create the first migration
 
 ### Step 12
 Now you can run the server
-
       $ mix phx.server
+
+### Step 13
+List Ash routes in iex
+
+    iex(1)> AshStepByStep.MyApi.Resources.User |> AshJsonApi.Resource.Info.routes()
 
 ### Step 13
 Finally you can access graphql interface to test and run your graphql queries:
 
-Access: http://localhost:4000/playground
+Access graphql: http://localhost:4000/playground
+
+api rest: http://localhost:4000/api/json/users

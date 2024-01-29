@@ -29,6 +29,12 @@ defmodule AshStepByStepWeb.Router do
             interface: :playground
   end
 
+  scope "/api/json" do
+    pipe_through(:api)
+
+    forward "/", AshStepByStepWeb.MyApi.Router
+  end
+
   scope "/", AshStepByStepWeb do
     pipe_through :browser
 

@@ -2,7 +2,7 @@ defmodule AshStepByStep.MyApi do
   use Ash.Api,
     extensions: [
       AshGraphql.Api,
-      AshJsonApi
+      AshJsonApi.Api
     ]
 
   resources do
