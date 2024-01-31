@@ -154,6 +154,19 @@ defmodule AshStepByStep.MyApi.Resources.User do
       update :update_user, :update
     end
   end
+
+  json_api do
+    type "user"
+
+    routes do
+      base("/users")
+
+      get(:read)
+      index :read
+      post(:create)
+    end
+  end
+
 end
 ```
 
