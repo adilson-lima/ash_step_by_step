@@ -1,4 +1,4 @@
-defmodule AshStepByStep.MyApi.Resources.User do
+defmodule AshStepByStep.Api.Resources.User do
   use Ash.Resource,
     data_layer: AshPostgres.DataLayer,
     extensions: [

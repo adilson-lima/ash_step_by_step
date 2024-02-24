@@ -1,7 +1,7 @@
 defmodule AshStepByStep.Schema do
   use Absinthe.Schema
 
-  @apis [AshStepByStep.MyApi]
+  @apis [AshStepByStep.Api]
 
   use AshGraphql, apis: @apis
 

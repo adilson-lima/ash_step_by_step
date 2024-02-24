@@ -31,11 +31,6 @@ end
 ```
 
 ### Step 04
-Install all dependencies
-
-      $ mix deps.get
-
-### Step 05
 Configure Ash formatter to the file ***formatter.exs***
 ```elixir
 [
@@ -43,6 +38,13 @@ Configure Ash formatter to the file ***formatter.exs***
   ...
 ]
 ```
+
+### Step 05
+Install all dependencies
+
+      $ mix deps.get
+
+
 ### Step 06
 Edit file ***repo.ex*** to ash support
 ```elixir
@@ -56,68 +58,11 @@ defmodule AshStepByStep.Repo do
 end
 ```
 
+
 ### Step 07
-Edit file ***config.exs*** to add Ash suport
-
+Create a file resource ***/ash_step_by_step/api/resources/user.ex***
 ```elixir
-# config/config.exs
-config :mime, :types, %{
-  "application/vnd.api+json" => ["json"]
-}
-
-config :mime, :extensions, %{
-  "json" => "application/vnd.api+json"
-}
-
-config :ash_step_by_step, :default_managed_relationship_type_name_template, :action_name
-config :my_project, ash_apis: [AshStepByStep.MyApi]
-```
-
-
-### Step 08
-Create file ***/ash_step_by_step/schema.ex*** to graphql
-```elixir
-defmodule AshStepByStep.Schema do
-  use Absinthe.Schema
-
-  @apis [AshStepByStep.MyApi]
-
-  use AshGraphql, apis: @apis
-
-  query do
-  end
-
-  mutation do
-  end
-end
-
-```
-
-### Step 09
-Create a separate router in ***/ash_step_by_step_web/my_api/router.ex**, this module to work with your APIs
-```elixir
-defmodule AshStepByStepWeb.MyApi.Router do
-  use AshJsonApi.Api.Router,
-    apis: [AshStepByStep.MyApi],
-
-    # optionally a json_schema route
-    json_schema: "/json_schema"
-
-  # optionally an open_api route
-  # open_api: "/open_api"
-end
-```
-
-### Step 10
-Recompile the mime:
-
-      $ mix deps.compile mime --force
-
-
-### Step 09
-Create a file resource ***/ash_step_by_step/my_api/resources/user.ex***
-```elixir
-defmodule AshStepByStep.MyApi.Resources.User do
+defmodule AshStepByStep.Api.Resources.User do
   use Ash.Resource,
     data_layer: AshPostgres.DataLayer,
     extensions: [
@@ -170,11 +115,12 @@ defmodule AshStepByStep.MyApi.Resources.User do
 end
 ```
 
-### Step 10
-Create a api file ***/my_api/my_api.ex*** and add resource
+
+### Step 08
+Create a api file ***/api.ex*** and add resource
 
 ```elixir
-defmodule AshStepByStep.MyApi do
+defmodule AshStepByStep.Api do
   use Ash.Api,
     extensions: [
       AshGraphql.Api,
@@ -182,7 +128,7 @@ defmodule AshStepByStep.MyApi do
     ]
 
   resources do
-    resource AshStepByStep.MyApi.Resources.User
+    resource AshStepByStep.Api.Resources.User
   end
 
   graphql do
@@ -192,8 +138,71 @@ defmodule AshStepByStep.MyApi do
 end
 ```
 
+### Step 09
+Create file ***/ash_step_by_step/schema.ex*** to graphql
+```elixir
+defmodule AshStepByStep.Schema do
+  use Absinthe.Schema
+
+  @apis [AshStepByStep.Api]
+
+  use AshGraphql, apis: @apis
+
+  query do
+  end
+
+  mutation do
+  end
+end
+
+```
+
 
 ### Step 10
+Create a separate router in ***/ash_step_by_step_web/api/router.ex**, this module to work with your APIs
+```elixir
+defmodule AshStepByStepWeb.Api.Router do
+  use AshJsonApi.Api.Router,
+    apis: [AshStepByStep.Api],
+
+    # optionally a json_schema route
+    json_schema: "/json_schema"
+
+  # optionally an open_api route
+  # open_api: "/open_api"
+end
+```
+
+### Step 11
+Edit file ***config.exs*** to add Ash suport
+
+```elixir
+# config/config.exs
+config :mime, :types, %{
+  "application/vnd.api+json" => ["json"]
+}
+
+config :mime, :extensions, %{
+  "json" => "application/vnd.api+json"
+}
+
+config :ash, :utc_datetime_type, :datetime
+
+config :ash_step_by_step, :default_managed_relationship_type_name_template, :action_name
+config :ash_step_by_step, ash_apis: [AshStepByStep.Api]
+```
+
+
+### Step 12
+Recompile the mime:
+
+      $ mix deps.compile mime --force
+
+
+
+
+
+### Step 13
 Configure phoenix router in file ***ash_step_by_step_web/router.ex***
 ```elixir
   ...
@@ -218,29 +227,30 @@ Configure phoenix router in file ***ash_step_by_step_web/router.ex***
   scope "/api/json" do
     pipe_through(:api)
 
-    forward "/", AshStepByStepWeb.MyApi.Router
+    forward "/", AshStepByStepWeb.Api.Router
   end
 
   ...
 ```
 
-### Step 11
+### Step 14
 Create the database and create the first migration
 
       $ mix ash_postgres.create
       $ mix ash_postgres.generate_migrations --name create_user_table
       $ mix ash_postgres.migrate
 
-### Step 12
+### Step 15
 Now you can run the server
+      
       $ mix phx.server
 
-### Step 13
+### Step 16
 List Ash routes in iex
 
-    iex(1)> AshStepByStep.MyApi.Resources.User |> AshJsonApi.Resource.Info.routes()
+    iex(1)> AshStepByStep.Api.Resources.User |> AshJsonApi.Resource.Info.routes()
 
-### Step 13
+### Step 17
 Finally you can access graphql interface to test and run your graphql queries:
 
 Access graphql: http://localhost:4000/playground

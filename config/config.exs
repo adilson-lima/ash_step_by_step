@@ -15,10 +15,12 @@ config :mime, :extensions, %{
   "json" => "application/vnd.api+json"
 }
 
+config :ash, :utc_datetime_type, :datetime
+
 config :ash_step_by_step, :default_managed_relationship_type_name_template, :action_name
 
 config :ash_step_by_step,
-  ash_apis: [AshStepByStep.MyApi]
+  ash_apis: [AshStepByStep.Api]
 
 config :ash_step_by_step,
   ecto_repos: [AshStepByStep.Repo],

@@ -32,7 +32,7 @@ defmodule AshStepByStepWeb.Router do
   scope "/api/json" do
     pipe_through(:api)
 
-    forward "/", AshStepByStepWeb.MyApi.Router
+    forward "/", AshStepByStepWeb.Api.Router
   end
 
   scope "/", AshStepByStepWeb do

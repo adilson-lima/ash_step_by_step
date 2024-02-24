@@ -1,6 +1,6 @@
-defmodule AshStepByStepWeb.MyApi.Router do
+defmodule AshStepByStepWeb.Api.Router do
   use AshJsonApi.Api.Router,
-    apis: [AshStepByStep.MyApi],
+    apis: [AshStepByStep.Api],
 
     # optionally a json_schema route
     json_schema: "/json_schema"

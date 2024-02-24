@@ -1,4 +1,4 @@
-defmodule AshStepByStep.MyApi do
+defmodule AshStepByStep.Api do
   use Ash.Api,
     extensions: [
       AshGraphql.Api,
@@ -6,7 +6,7 @@ defmodule AshStepByStep.MyApi do
     ]
 
   resources do
-    resource AshStepByStep.MyApi.Resources.User
+    resource AshStepByStep.Api.Resources.User
   end
 
   graphql do
